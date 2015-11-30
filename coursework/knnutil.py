@@ -21,3 +21,14 @@ def histogram(data):
         except Exception:
             hist[value] = 1
     return hist
+
+
+def arrayToReverseDict(array):
+    """
+    Swaps keys and values from a list, in the process converting it into
+    a dict
+    """
+    d = {}
+    for index, value in enumerate(array):
+        d[value] = index
+    return d

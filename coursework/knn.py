@@ -53,17 +53,6 @@ def getFeaturesFromNearestNeighbours(neighbourIndices, dataset, featureIndex):
     return features
 
 
-def arrayToReverseDict(array):
-    """
-    Swaps keys and values from a list, in the process converting it into
-    a dict
-    """
-    d = {}
-    for index, value in enumerate(array):
-        d[value] = index
-    return d
-
-
 def vote(features):
     """
     Takes a list of features, returns the most common feature of the list.
@@ -93,7 +82,7 @@ def main(arg):
 
 
 def knn(k, searchKey, queryRow, header, data):
-    headerIndices = arrayToReverseDict(header)
+    headerIndices = util.arrayToReverseDict(header)
     distances = buildDistances(data, queryRow)
     neighbourIndices = getNearestNeighbours(distances, k)
     features = getFeaturesFromNearestNeighbours(
