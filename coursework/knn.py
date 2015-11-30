@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """A module for building K-Nearest-Neighbor"""
 
-from sys import argv
 import numpy as np
 import knnloader
 import knnutil as util
+import argparse
 
 
 def distanceBetweenTwoInstances(instanceA, instanceB):
@@ -30,6 +30,7 @@ def buildDistances(data, query):
     distances = np.array([])
     for i in data:
         distance = distanceBetweenTwoInstances(i, query)
+        # distance = spatial.distance.cdist(i, query, "matching")
         distances = np.append(distances, distance)
     return distances
 
@@ -62,11 +63,11 @@ def vote(features):
 
 
 def main(arg):
+    k = int(arg.k)
     results = []
-    k = int(arg[1])
-    dataFilePath = arg[2]
-    testDataFilePath = arg[3]
-    searchKey = arg[4]
+    dataFilePath = arg.dataFile
+    testDataFilePath = arg.testDataFile
+    searchKey = arg.propertyToLearn
     header, data = knnloader.getDataFromFilename(dataFilePath)
     _, testData = knnloader.getDataFromFilename(testDataFilePath)
     for queryRow in testData:
@@ -92,8 +93,19 @@ def knn(k, searchKey, queryRow, header, data):
     return vote(features)
 
 
-
-
-
 if __name__ == '__main__':
-    main(argv)
+    parser = argparse.ArgumentParser(description='CLI for KNN')
+    parser.add_argument("k", help="The number of Neighbours to use")
+    parser.add_argument("dataFile",
+                        help="""
+                        The path to a CSV file containing your training data
+                        """)
+    parser.add_argument("testDataFile",
+                        help="""
+                        The path to a CSV file containing your test data
+                        """)
+    parser.add_argument("propertyToLearn",
+                        help="""
+                        The property that you want to learn
+                        """)
+    main(parser.parse_args())
