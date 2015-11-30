@@ -3,37 +3,8 @@
 
 from sys import argv
 import numpy as np
-import csv
-from hashlib import md5
-
-
-def getDataAsMultidimensionalArrayFromFilename(filename):
-    """
-    Takes a path to a file, performs I/O, returns data as a multidimensional
-    array.
-
-    Named Keywords
-    filename -- a string containing the file path
-    """
-    data = []
-    header = []
-    with open(filename, 'rb') as csvfile:
-        datareader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for row in datareader:
-            if(len(header) < 1):
-                header = row
-            else:
-                data.append(row)
-    return header, np.array(data)
-
-
-def getMd5(arg):
-    """
-    Takes arbitrary data, returns an md5 hash
-    """
-    x = md5()
-    x.update(arg)
-    return x.digest()
+import knnloader
+import knnutil as util
 
 
 def distanceBetweenTwoInstances(instanceA, instanceB):
@@ -97,7 +68,7 @@ def vote(features):
     """
     Takes a list of features, returns the most common feature of the list.
     """
-    hist = histogram(features)
+    hist = util.histogram(features)
     return sorted(hist, key=hist.get)[-1]
 
 
@@ -107,8 +78,8 @@ def main(arg):
     dataFilePath = arg[2]
     testDataFilePath = arg[3]
     searchKey = arg[4]
-    header, data = getDataAsMultidimensionalArrayFromFilename(dataFilePath)
-    _, testData = getDataAsMultidimensionalArrayFromFilename(testDataFilePath)
+    header, data = knnloader.getDataFromFilename(dataFilePath)
+    _, testData = knnloader.getDataFromFilename(testDataFilePath)
     for queryRow in testData:
         result = knn(
             k,
@@ -118,7 +89,7 @@ def main(arg):
             data
         )
         results.append(result)
-    print histogram(results)
+    print util.histogram(results)
 
 
 def knn(k, searchKey, queryRow, header, data):
@@ -132,15 +103,7 @@ def knn(k, searchKey, queryRow, header, data):
     return vote(features)
 
 
-def histogram(data):
-    """Generates a histogram for arbitrary data"""
-    hist = {}
-    for index, value in enumerate(data):
-        try:
-            hist[value] += 1
-        except Exception:
-            hist[value] = 1
-    return hist
+
 
 
 if __name__ == '__main__':
