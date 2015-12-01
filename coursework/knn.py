@@ -69,27 +69,59 @@ def main(arg):
     testDataFilePath = arg.testDataFile
     searchKey = arg.propertyToLearn
     header, data = knnloader.getDataFromFilename(dataFilePath)
+    headerIndices = util.arrayToReverseDict(header)
     _, testData = knnloader.getDataFromFilename(testDataFilePath)
+    confusionMatrix = np.array([0, 0, 0, 0])
     for queryRow in testData:
+        searchIndex = headerIndices[searchKey]
         result = knn(
             k,
-            searchKey,
+            searchIndex,
             queryRow,
             header,
             data
         )
+        cfMatrixIndex = 1 if result == "Sick" else 0
+        cfMatrixIndex += 2 if queryRow[searchIndex] == "Healthy" else 0
+        confusionMatrix[cfMatrixIndex] += 1
         results.append(result)
-    print util.histogram(results)
+    computedHistogram = util.histogram(results)
+    accuracyRate = (
+        float(
+            confusionMatrix[2] +
+            confusionMatrix[1])
+        )/(
+        float(
+            confusionMatrix[0] +
+            confusionMatrix[1] +
+            confusionMatrix[2] +
+            confusionMatrix[3]
+        )
+    )
+    errorRate = 1 - accuracyRate
+    sensitivity = confusionMatrix[2]/float(confusionMatrix[2]+confusionMatrix[3])
+    specificity = confusionMatrix[1]/float(confusionMatrix[1]+confusionMatrix[0])
+    precision = confusionMatrix[2]/float(confusionMatrix[2]+confusionMatrix[0])
+    print "Accuracy Rate: ", accuracyRate
+    print "Error Rate:", errorRate
+    print "Sensitivity: ", sensitivity
+    print "Specificity: ", specificity
+    print "Precision: ", precision
+    print confusionMatrix.reshape(2, 2)
+    print computedHistogram
 
 
-def knn(k, searchKey, queryRow, header, data):
-    headerIndices = util.arrayToReverseDict(header)
+def computed(result):
+    return 0 if result == "Sick" else 1
+
+
+def knn(k, searchIndex, queryRow, header, data):
     distances = buildDistances(data, queryRow)
     neighbourIndices = getNearestNeighbours(distances, k)
     features = getFeaturesFromNearestNeighbours(
         neighbourIndices,
         data,
-        headerIndices[searchKey])
+        searchIndex)
     return vote(features)
 
 
