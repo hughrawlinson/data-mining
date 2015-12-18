@@ -1,0 +1,31 @@
+support         15*0.25         3.75
+confidence      15*0.75         11.25
+
+Sex=Male                8       significant
+Sex=Female              7       significant
+LifeInsuranceProm=Yes   9       significant
+LifeInsuranceProm=No    6       significant
+IncomeRange=20-30K      4       significant
+IncomeRange=30-40K      5       significant
+IncomeRange=40-50K      4       significant
+IncomeRange=50-60K      2       insignificant
+
+Sex=Male&LifeInsuranceProm=Yes                  3       non-candidate
+Sex=Female&LifeInsuranceProm=Yes                6       candidate
+Sex=Male&LifeInsuranceProm=No                   5       candidate
+Sex=Female&LifeInsuranceProm=No                 1       non-candidate
+Sex=Male&IncomeRange=20-30K                     2       non-candidate
+Sex=Female&IncomeRange=20-30K                   2       non-candidate
+Sex=Male&IncomeRange=30-40K                     3       non-candidate
+Sex=Female&IncomeRange=30-40K                   2       non-candidate
+Sex=Male&IncomeRange=40-50K                     3       non-candidate
+Sex=Female&IncomeRange=40-50K                   1       non-candidate
+IncomeRange=20-30K&LifeInsuranceProm=Yes        2       non-candidate
+IncomeRange=20-30K&LifeInsuranceProm=No         2       non-candidate
+IncomeRange=30-40K&LifeInsuranceProm=Yes        4       candidate
+IncomeRange=30-40K&LifeInsuranceProm=No         1       non-candidate
+IncomeRange=40-50K&LifeInsuranceProm=Yes        1       non-candidate
+IncomeRange=40-50K&LifeInsuranceProm=No         3       non-candidate
+
+Sex=Female&LifeInsuranceProm=Yes&IncomeRange=30-40K     2       non-candidate
+Sex=Male&LifeInsuranceProm=No&IncomeRange=30-40K        1       non-candidate
